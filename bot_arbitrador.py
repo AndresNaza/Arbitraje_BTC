@@ -6,7 +6,8 @@ import datetime
 import time
 import random
 import schedule
-import sys
+#import sys
+import os
 
 coin = ['BTC', 'ETH', 'DAI', 'USDT', 'USDC']
 fiat = ['ARS', 'USD']
@@ -115,8 +116,10 @@ def telegram_bot_sendtext(bot_message):
     
     ## https://medium.com/@ManHay_Hong/how-to-create-a-telegram-bot-and-send-messages-with-python-4cf314d9fa3e
     
-    bot_token = sys.argv[1]
-    bot_chatID = sys.argv[2]
+    #bot_token = sys.argv[1]
+    #bot_chatID = sys.argv[2]
+    bot_token = os.getenv('TELEGRAM_API_ID',config('TELEGRAM_API_ID'))
+    bot_chatID = os.getenv('TELEGRAM_API_CHATID',config('TELEGRAM_API_CHATID'))
     send_text = 'https://api.telegram.org/bot' + bot_token + '/sendMessage?chat_id=' + bot_chatID + '&parse_mode=Markdown&text=' + bot_message
 
     response = requests.get(send_text)
