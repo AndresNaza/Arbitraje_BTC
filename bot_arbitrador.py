@@ -133,26 +133,19 @@ def flow():
     
     Arbitrajes = filter_values(df=calc_percent(get_data()), min_gain_percent=0.02)
     
-    if len(Arbitrajes)==0:
-        
-        message="Sin oportunidades detectadas"
-        telegram_bot_sendtext(message)
-        
-    else:
-            
+    if len(Arbitrajes)!=0: 
         for index, row in Arbitrajes.iterrows():
             message="Oportunidad de arbitraje: COMPRAR "+ str(row['coin']) + " en " + str(row['exchange_buy']).upper() + " por " + str("${:,.2f}".format(row['totalAsk_buy'])) + " y vender en " + str(row['exchange_sell']).upper() + " por " + str("${:,.2f}".format(row['totalBid_sell'])) + ". Ganancia estimada: " + "*" + str("{:.2%}".format(row['Percent'])) + "*"
             telegram_bot_sendtext(message)                                                                                                          
 
 
-
+            
+##Considering that Github Actions cancels jobs with more than 6 hrs running
+script_end_time = datetime.datetime.now()+datetime.timedelta(hours=5, minutes=55)    
 
 ## Schedule job
 schedule.every(1).minutes.do(flow)
 
-while True:
-    if datetime.datetime.now().time().hour>=9 & datetime.datetime.now().time().hour<=23:
-        schedule.run_pending()
-        time.sleep(30)
-    else:
-        time.sleep(60)
+while datetime.datetime.now() < script_end_time:
+    schedule.run_pending()
+    time.sleep(30)
