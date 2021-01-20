@@ -2,7 +2,7 @@ name: BTC_Bot
 
 on:
   schedule:
-    - cron:  '0 */6 * * *'
+    - cron:  '* * * * *'
 
 jobs:
   build:
