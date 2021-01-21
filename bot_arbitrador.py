@@ -74,7 +74,7 @@ def telegram_bot_sendtext(bot_message, bot_token, bot_chat_id):
 def get_parameters():
     api_id = os.getenv('TELEGRAM_API_ID')
     chat_id = os.getenv('TELEGRAM_API_CHATID')
-    min_gain_percent = 0.02 if os.getenv('MIN_GAIN_PERCENT') is None else float(os.getenv('MIN_GAIN_PERCENT'))
+    min_gain_percent = 0.04 if os.getenv('MIN_GAIN_PERCENT') is None else float(os.getenv('MIN_GAIN_PERCENT'))
     return api_id, chat_id, min_gain_percent
 
 def flow():
