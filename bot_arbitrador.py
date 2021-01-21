@@ -6,7 +6,7 @@ import itertools
 import datetime
 import time
 import random
-#import schedule
+import schedule
 #import sys
 import os
 
@@ -92,17 +92,14 @@ def flow():
             else:
                 print(message)
 
-if __name__ == '__main__':
-    flow()
+#Considering that Github Actions cancels jobs with more than 6 hrs running
+script_end_time = datetime.datetime.now()+datetime.timedelta(hours=5, minutes=55)    
 
-##Considering that Github Actions cancels jobs with more than 6 hrs running
-#script_end_time = datetime.datetime.now()+datetime.timedelta(hours=5, minutes=55)    
-#
-### Schedule job
-#schedule.every(1).minutes.do(flow)
-#
-#while datetime.datetime.now() < script_end_time:
-#    schedule.run_pending()
-#    time.sleep(30)
-#
+## Schedule job
+schedule.every(1).minutes.do(flow)
+
+while datetime.datetime.now() < script_end_time:
+    schedule.run_pending()
+    time.sleep(30)
+
 

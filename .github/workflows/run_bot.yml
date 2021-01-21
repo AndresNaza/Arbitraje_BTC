@@ -3,9 +3,7 @@ name: BTC_Bot
 on: 
   push:
   schedule:
-    - cron : '*/10 23 1 * *'
-    # https://crontab.guru/#*/10_*_*_*_*
-    #- cron : '*/10 * * * *'
+    - cron : '0 0/6 * * *'
 
 jobs:
   build:
