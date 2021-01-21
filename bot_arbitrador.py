@@ -86,13 +86,12 @@ def flow():
     if len(Arbitrajes)!=0: 
         for index, row in Arbitrajes.iterrows():
             message="Oportunidad de arbitraje: COMPRAR "+ str(row['coin']) + " en " + str(row['exchange_buy']).upper() + " por " + str("${:,.2f}".format(row['ask_buy'])) + " y vender en " + str(row['exchange_sell']).upper() + " por " + str("${:,.2f}".format(row['bid_sell'])) + ". Ganancia estimada: " + "*" + str("{:.2%}".format(row['percent'])) + "*"
-            #message = "Oportunidad de arbitraje: COMPRAR {0} en {1} por ${:,.2f} y vender en {3} por ${:,.2f}. Ganancia estimada: *{:.2%}*".format(row['coin'], row['exchange_buy'].upper(), row['ask_buy'], row['exchange_sell'], row['bid_sell'], row['percent'])
             if bot_id is not None and chat_id is not None:
                 telegram_bot_sendtext(message, bot_id, chat_id)
             else:
                 print(message)
 
-#Considering that Github Actions cancels jobs with more than 6 hrs running
+##Considering that Github Actions cancels jobs with more than 6 hrs running
 script_end_time = datetime.datetime.now()+datetime.timedelta(hours=5, minutes=55)    
 
 ## Schedule job
@@ -101,5 +100,3 @@ schedule.every(1).minutes.do(flow)
 while datetime.datetime.now() < script_end_time:
     schedule.run_pending()
     time.sleep(30)
-
-
