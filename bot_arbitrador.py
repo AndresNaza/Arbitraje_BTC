@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-pd.options.mode.chained_assignment = None
 import requests
 import itertools
 import datetime
@@ -10,6 +9,7 @@ import schedule
 #import sys
 import os
 
+pd.options.mode.chained_assignment = None
 MAX_ATTEMPTS = 10
 
 coin = ['BTC', 'ETH', 'DAI', 'USDT', 'USDC']
@@ -39,10 +39,10 @@ def get_data():
         coin_fiat_data = make_request(url)
         if coin_fiat_data is not None:
             for exchange, values in coin_fiat_data.items():
-                row = [exchange, coin, fiat, values['ask'], values['bid']]
+                row = [exchange, coin, fiat, values['ask'], values['bid'], values['totalAsk'], values['totalBid'], values['time']]
                 rows.append(row)
 
-    return pd.DataFrame(rows, columns=['exchange', 'coin', 'fiat', 'ask', 'bid'])
+    return pd.DataFrame(rows, columns=['exchange', 'coin', 'fiat', 'ask', 'bid', 'total_ask', 'total_bid', 'time'])
 
 def calc_percent(df):
     ## Join the result DataFrame to itself by a common key in all rows to 
@@ -50,9 +50,9 @@ def calc_percent(df):
     ## perform calculations on all the possible combinations to see if an opportunity
     ## arises.
     merged = df.merge(df, left_on=['coin', 'fiat'], right_on=['coin', 'fiat'], suffixes=['_buy', '_sell'])
-    arbitrages = merged[merged['ask_buy'] < merged['bid_sell']]
-    arbitrages['difference'] = arbitrages['bid_sell'] - arbitrages['ask_buy']
-    arbitrages['percent'] = (arbitrages['bid_sell'] / arbitrages['ask_buy']) - 1
+    arbitrages = merged[merged['total_ask_buy'] < merged['total_bid_sell']]
+    arbitrages['difference'] = arbitrages['total_bid_sell'] - arbitrages['total_ask_buy']
+    arbitrages['percent'] = (arbitrages['total_bid_sell'] / arbitrages['total_ask_buy']) - 1
 
     return arbitrages
 
@@ -85,11 +85,12 @@ def flow():
     
     if len(Arbitrajes)!=0: 
         for index, row in Arbitrajes.iterrows():
-            message="Oportunidad de arbitraje: COMPRAR "+ str(row['coin']) + " en " + str(row['exchange_buy']).upper() + " por " + str("${:,.2f}".format(row['ask_buy'])) + " y vender en " + str(row['exchange_sell']).upper() + " por " + str("${:,.2f}".format(row['bid_sell'])) + ". Ganancia estimada: " + "*" + str("{:.2%}".format(row['percent'])) + "*"
+            message="Oportunidad de arbitraje: COMPRAR "+ str(row['coin']) + " en " + str(row['exchange_buy']).upper() + " por " + str("${:,.2f}".format(row['total_ask_buy'])) + " y vender en " + str(row['exchange_sell']).upper() + " por " + str("${:,.2f}".format(row['total_bid_sell'])) + ". Ganancia estimada: " + "*" + str("{:.2%}".format(row['percent'])) + "*"
             if bot_id is not None and chat_id is not None:
                 telegram_bot_sendtext(message, bot_id, chat_id)
             else:
                 print(message)
+
 
 ##Considering that Github Actions cancels jobs with more than 6 hrs running
 script_end_time = datetime.datetime.now()+datetime.timedelta(hours=5, minutes=55)    
