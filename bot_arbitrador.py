@@ -57,8 +57,8 @@ def calc_percent(df):
     return arbitrages
 
 def filter_values(df, min_gain_percent):
-    ## Filter opportunities with a min gain percent threshold and drop those involving "sesocio"
-    filters = (df['percent'] > min_gain_percent) & (df['exchange_buy'] != "sesocio")
+    ## Filter opportunities with a min gain percent threshold and drop those involving "sesocio" and with total_ask_buy without value
+    filters = (df['percent'] > min_gain_percent) & (df['exchange_buy'] != "sesocio") & (df['total_ask_buy'] > 0)
     Arbitrajes = df[filters]
     return Arbitrajes.sort_values('percent', ascending = False).reset_index()
 
