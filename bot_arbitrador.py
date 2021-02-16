@@ -75,17 +75,18 @@ def get_parameters():
     api_id = os.getenv('TELEGRAM_API_ID')
     chat_id = os.getenv('TELEGRAM_API_CHATID')
     min_gain_percent = 0.04 if os.getenv('MIN_GAIN_PERCENT') is None else float(os.getenv('MIN_GAIN_PERCENT'))
-    return api_id, chat_id, min_gain_percent
+    currency={'ARS':'$', 'USD':'U$D'}
+    return api_id, chat_id, min_gain_percent, currency
 
 def flow():
     opportunities = calc_percent(get_data())
-    bot_id, chat_id, min_gain_percent = get_parameters()
+    bot_id, chat_id, min_gain_percent, currency = get_parameters()
 
     Arbitrajes = filter_values(opportunities, min_gain_percent)
     
     if len(Arbitrajes)!=0: 
         for index, row in Arbitrajes.iterrows():
-            message="Oportunidad de arbitraje: COMPRAR "+ str(row['coin']) + " en " + str(row['exchange_buy']).upper() + " por " + str("${:,.2f}".format(row['total_ask_buy'])) + " y vender en " + str(row['exchange_sell']).upper() + " por " + str("${:,.2f}".format(row['total_bid_sell'])) + ". Ganancia estimada: " + "*" + str("{:.2%}".format(row['percent'])) + "*"
+            message="Oportunidad de arbitraje: COMPRAR "+ str(row['coin']) + " en " + str(row['exchange_buy']).upper() + " por " + str(currency.get(row['fiat'])+' ') + str("{:,.2f}".format(row['total_ask_buy'])) + " y vender en " + str(row['exchange_sell']).upper() + " por " + str(currency.get(row['fiat'])+' ') + str("{:,.2f}".format(row['total_bid_sell'])) + ". Ganancia estimada: " + "*" + str("{:.2%}".format(row['percent'])) + "*"
             if bot_id is not None and chat_id is not None:
                 telegram_bot_sendtext(message, bot_id, chat_id)
             else:
