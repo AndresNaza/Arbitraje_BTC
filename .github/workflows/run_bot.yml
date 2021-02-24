@@ -25,3 +25,4 @@ jobs:
       env:
         TELEGRAM_API_ID: ${{ secrets.TELEGRAM_API_ID }}
         TELEGRAM_API_CHATID: ${{ secrets.TELEGRAM_API_CHATID }}
+        MIN_GAIN_PERCENT: ${{ secrets.MIN_GAIN_PERCENT}}
